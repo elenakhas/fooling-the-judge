@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Study B2 (camouflage vs legitimate twin). Needs ANTHROPIC_API_KEY. Run from the fooling-the-judge folder.
+# Camouflage experiment (camouflaged reply vs legitimate twin). Needs ANTHROPIC_API_KEY. Run from the fooling-the-judge folder.
 #   STAGE=1 bash scripts/run_camo.sh   generate the pairs (40 questions x 6 moves, Opus 5.5) -> checks -> spot-check sheet
 #            TRIAL=2 STAGE=1 ...       first 2 questions per dataset only (4 x 6 = 24 pairs), to read before the rest
 #   STAGE=2 bash scripts/run_camo.sh   judge all replies with arms 0-3 (Message Batches API; re-run to collect)

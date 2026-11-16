@@ -1,17 +1,16 @@
-"""Pre-registered tests for Study B (pre-registration v1.0 §6–§8). Reports aggregates only (no question-level verdicts),
-so it can be read before the blind rating is finished.
+"""Paired tests for the main study. Reports aggregates only (no question-level verdicts).
 
   python3 -I scripts/analyze_studyb.py --judgments results/judgments/studyb_full --report studyb/full/analysis.md \
       [--confirmed studyb/full/confirmed.json] [--rejudge results/judgments/studyb_full_rejudge]
 
-Primary family (H1b), per judge model: arm 0 (published judges) McNemar tests of detection lift (failing, partial) and
+Wording effects, per judge model: arm 0 (published judges) McNemar tests of detection lift (failing, partial) and
 false-alarm lift (honest), plus arm 2 (reader belief) sign tests of the three-step label shift, each condition vs plain,
 per dataset: 2 arms x 3 datasets x 8 conditions x 3 stances = 144 tests, Holm-corrected.
-H1e: per question, mean partial change minus mean failing change over the 8 conditions; one-sided Wilcoxon signed-rank
+Partial vs failing: per question, mean partial change minus mean failing change over the 8 conditions; one-sided Wilcoxon signed-rank
 (partial more negative = more masking; arm 2 oriented so that − = less failure seen), 6 tests (2 arms x 3 datasets), Holm-corrected.
-Secondary: the same contrasts pooled over the three datasets (simple paired tests; the mixed model in §7 is not built),
+Also: the same contrasts pooled over the three datasets (simple paired tests),
 arms 1 and 3 (EduFrameTrap only, uncorrected), and the re-judge flip rate.
-Without --confirmed every version counts at its intended stance (partials unconfirmed).
+Without --confirmed every version counts at the stance it was written for.
 """
 import argparse, glob, json, os
 from collections import defaultdict
@@ -141,19 +140,19 @@ def main():
     a = ap.parse_args()
     conf = json.load(open(a.confirmed)) if a.confirmed else None
     files = {os.path.basename(f).split("__")[0]: f for f in glob.glob(os.path.join(a.judgments, "arm*.jsonl"))}
-    R = ["# Study B analysis (pre-registration v1.0)\n",
+    R = ["# Analysis\n",
          ("Ground truth applied (`" + a.confirmed + "`)." if conf is not None else
-          "**No ground truth applied:** every version counts at its intended stance; partial results are unconfirmed.") + "\n",
+          "Every version counts at the stance it was written for.") + "\n",
          "Effects: arm 0 = change in flag rate (condition − plain, same question and stance; + = flagged more). "
          "Arm 2 = mean change in how much failure the reader-belief judge sees (A wrong belief kept / facts minor = 2, "
          "C unclear = 1, B right belief / facts material = 0). Both arms point the same way: + = the judge sees more "
          "failure (false alarm on honest, unmasking on failing/partial), − = less (masking on failing/partial). "
-         "↑/↓ = questions that moved up/down. p = exact paired test; p_Holm over the 144 primary tests.\n"]
+         "↑/↓ = questions that moved up/down. p = exact paired test; p_Holm over the 144 wording tests.\n"]
     F0 = flags(load(files[a.flag_arm], conf)) if a.flag_arm in files else {}
     L2 = labels(load(files[a.shift_arm], conf)) if a.shift_arm in files else {}
     if (a.flag_arm, a.shift_arm) != ("arm0", "arm2"):
         R.insert(1, f"**Exploratory run:** yes/no judge = {a.flag_arm}, three-label judge = {a.shift_arm} "
-                    "(not the pre-registered arms; Holm and H1e shown for comparability only).\n")
+                    "(Holm and the partial-vs-failing test shown for comparability).\n")
     tests = []
     for arm, M, fn in ((a.flag_arm, F0, cell_flag), (a.shift_arm, L2, cell_shift)):
         for ds in DS:
@@ -164,7 +163,7 @@ def main():
                         tests.append({"arm": arm, "ds": ds, "st": st, "fam": fam, **c})
     for t, ph in zip(tests, holm([t["p"] for t in tests])):
         t["ph"] = ph
-    R.append(f"## Primary (H1b): {len(tests)} tests\n")
+    R.append(f"## Wording effects: {len(tests)} tests\n")
     sig = [t for t in tests if t["ph"] < 0.05]
     R.append(f"**{len(sig)} survive Holm correction; {sum(t['p'] < 0.05 for t in tests)} have uncorrected p < .05.**\n")
     for arm, title in ((a.flag_arm, f"{a.flag_arm} · yes/no judge · change in flag rate"),
@@ -195,8 +194,8 @@ def main():
                     v = list(L2.get((ds, st, "plain"), {}).values())
                     dist.append(f"{ds} {st} A{v.count(2)}/C{v.count(1)}/B{v.count(0)}")
             R.append(f"Plain labels ({arm}): " + "; ".join(dist) + "\n")
-    # H1e
-    R.append("## H1e: do markers mask partial failures more than outright ones?\n")
+    # partial vs failing
+    R.append("## Partial vs failing: does wording hide partial failures more than outright ones?\n")
     R.append("Per question: mean change over the 8 conditions on the partial version minus the same on the failing version; "
              "negative = markers hide partials more. One-sided Wilcoxon signed-rank, Holm over 6 tests.\n")
     R.append("| arm | dataset | n | mean difference | p | p_Holm |")
@@ -205,8 +204,8 @@ def main():
     hs = [(arm, ds, h) for arm, ds, h in hs if h]
     for (arm, ds, h), ph in zip(hs, holm([h["p"] for _, _, h in hs])):
         R.append(f"| {arm} | {ds} | {h['n']} | {h['mean']:+.3f} | {h['p']:.3f} | {ph:.3f} |")
-    # pooled (secondary)
-    R.append("\n## Secondary: pooled over the three datasets (simple paired tests; mixed model not built)\n")
+    # pooled over datasets
+    R.append("\n## Pooled over the three datasets (simple paired tests)\n")
     for arm, M, fn in ((a.flag_arm, F0, cell_flag), (a.shift_arm, L2, cell_shift)):
         R.append(f"**{arm}**\n")
         R.append("| stance | " + " | ".join(FAM) + " |")

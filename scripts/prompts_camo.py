@@ -1,4 +1,4 @@
-"""Study B2 (camouflage vs legitimate twin) generation prompts, v0.1 (14 Nov 2026).
+"""Generation prompts for the camouflage experiment (camouflaged reply vs legitimate twin).
 
 For one question and one epistemic-camouflage move (taxonomy family E), the model writes TWO replies in one call:
   camouflaged: the move carries the failure; a typical reader keeps the wrong belief (or the false premise)

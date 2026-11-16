@@ -1,8 +1,8 @@
-"""Lexicon checks for Study B, using the open published lexicons built by fetch_lexicons.py (in $FTJ_DATA/lexicons)
+"""Lexicon checks for the versions, using the open published lexicons built by fetch_lexicons.py (in $FTJ_DATA/lexicons)
 plus ConvoKit politeness strategies, Empath and VADER (see features_open.py for sources).
 
-  python3 -I scripts/lexicon_checks.py --items studyb/pilot_items.jsonl --ingredients studyb/pilot2/ingredients.jsonl \
-      --versions studyb/pilot2/versions.jsonl --report studyb/pilot2/lexicon_checks.md --csv studyb/pilot2/lexicon_features.csv
+  python3 -I scripts/lexicon_checks.py --items studyb/items_60.jsonl --ingredients studyb/full/ingredients.jsonl \
+      --versions studyb/full/versions.jsonl --report studyb/full/lexicon_checks.md --csv studyb/full/lexicon_features.csv
 
 Three checks:
   1. Ingredients: no family vocabulary in the content sentences, using the full lexicon categories (the prompt's short

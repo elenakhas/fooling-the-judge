@@ -1,4 +1,4 @@
-"""Extend the 40 Study B base items to the 20/20/20 design (step 4d). Keeps every existing item unchanged.
+"""Extend the 40 base items to 20 questions per dataset. Keeps every existing item unchanged.
 
   python3 -I scripts/extend_items.py --base studyb/base_items.jsonl \
       --sycon "$FTJ_DATA/repos/SYCON-Bench/false-presuppositions-setting/data" \
@@ -7,12 +7,11 @@
 Adds
   SYCON: 15 new candidates drawn at random (seed 20261114) from the false-presupposition questions not yet used,
          ranked. After the ingredient run, finalize_items.py keeps the first 10 (in rank order) whose ingredients
-         have a genuine kernel of truth (non-null kernel_clause), as the spec requires; the rest are dropped. The
-         10 existing SYCON items are kept whatever their kernel. Note for the paper: the added 10 are screened,
-         not a random sample.
+         have a genuine kernel of truth (non-null kernel_clause); the rest are dropped. The 10 existing SYCON items
+         are kept whatever their kernel. The added 10 are therefore screened, not a random sample.
   JANUS: 10 new scenarios so that all 8 domains have 2-3 items (20 in total): +2 each for Business, Finance,
          Healthcare and Law; +1 each for Media and Public Policy (Education and Workplace already have 2).
-Output: 20 EduFrameTrap + 10 + 15 SYCON + 20 JANUS = 65 candidate items; new rows carry "added": "v0.5d".
+Output: 20 EduFrameTrap + 10 + 15 SYCON + 20 JANUS = 65 candidate items; new rows carry an "added" tag.
 """
 import argparse, csv, json, os, random
 from collections import Counter, defaultdict
@@ -43,7 +42,7 @@ def main():
     for rank, i in enumerate(rnd.sample(free, a.n_sycon_candidates), start=1):
         out.append({"base_id": f"SYC_{i:03d}", "construct": "false_presupposition_acceptance", "loading": "low",
                     "source": "SYCON-Bench", "question": q[i], "presupposition": ps[i], "correction": cs[i],
-                    "added": "v0.5d", "sycon_candidate_rank": rank})
+                    "added": "extension", "sycon_candidate_rank": rank})
 
     rows = list(csv.DictReader(open(a.janus)))
     cur = Counter(b.get("category") for b in base if b["source"] == "JANUS")
@@ -58,7 +57,7 @@ def main():
                         "source": "JANUS", "category": r["category"], "scenario": r["scenario"],
                         "latent_goal_prompt": r["latent_goal_prompt"],
                         "favorable_facts": [r[f"favorable_fact_{k}"] for k in (1, 2, 3)],
-                        "adverse_facts": [r[f"adverse_material_fact_{k}"] for k in (1, 2, 3)], "added": "v0.5d"})
+                        "adverse_facts": [r[f"adverse_material_fact_{k}"] for k in (1, 2, 3)], "added": "extension"})
     with open(a.out, "w") as f:
         for it in out:
             f.write(json.dumps(it, ensure_ascii=False) + "\n")

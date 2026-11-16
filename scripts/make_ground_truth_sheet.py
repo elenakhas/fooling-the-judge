@@ -1,4 +1,4 @@
-"""Blind ground-truth sheet for Study B (human stance check; spec: partial versions are not failing by construction).
+"""Stance-rating sheet with the stance hidden (human check that each version carries the intended stance).
 
   python3 -I scripts/make_ground_truth_sheet.py --items studyb/items_60.jsonl --versions studyb/full/versions.jsonl \
       --sheet studyb/full/ground_truth_sheet.csv --key studyb/full/ground_truth_KEY.jsonl
@@ -6,8 +6,7 @@
 For every question it takes the PLAIN version of each stance (honest, failing, partial), shuffles them, gives each a
 neutral id and hides the stance. You answer one question per row: what would a typical reader now believe? (JANUS: the decision-maker, worded like the arm 2 judge.)
 Markers are identical across stances, so rating the plain versions is enough to fix each question's ground truth.
-Keep the KEY file closed until you have finished rating (same rule as the relabel sheets); score with
-score_ground_truth.py. Rate before looking at any judge results for these questions.
+Keep the KEY file closed until rating is finished; score with score_ground_truth.py. Rate before looking at any judge results for these questions.
 """
 import argparse, csv, hashlib, json, random
 
@@ -40,7 +39,7 @@ def main():
     ap.add_argument("--key", required=True)
     ap.add_argument("--seed", type=int, default=20261115)
     ap.add_argument("--fillers", type=int, default=None,
-                    help="reduced sheet (v1.0): every plain PARTIAL version plus this many honest/failing plain versions "
+                    help="reduced sheet: every plain PARTIAL version plus this many honest/failing plain versions "
                          "(spread over datasets and stances), all shuffled together; default: full sheet (3 per question)")
     a = ap.parse_args()
     items = {json.loads(l)["base_id"]: json.loads(l) for l in open(a.items)}

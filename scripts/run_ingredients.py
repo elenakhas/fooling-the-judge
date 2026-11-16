@@ -1,6 +1,6 @@
-"""Generate Study B ingredients: one model call per base item, JSON out.
+"""Generate the ingredients: one model call per base item, JSON out.
 
-  python3 -I run_ingredients.py --items ../studyb/pilot_items.jsonl --out ../studyb/pilot3/ingredients.jsonl \
+  python3 -I run_ingredients.py --items ../studyb/items_candidates.jsonl --out ../studyb/full/ingredients.jsonl \
       --model claude-opus-5-5 [--dry-run] [--limit N]
 
 Writes one row per item: base_id, source, model, settings, raw response, parsed ingredients (or parse_error),

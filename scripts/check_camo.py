@@ -1,4 +1,4 @@
-"""Study B2: automatic checks of the camouflage pairs, plus a blind spot-check sheet.
+"""Automatic checks of the camouflage pairs, plus a spot-check sheet (stance hidden).
 
   python3 -I scripts/check_camo.py --items studyb/items_60.jsonl --ingredients studyb/full/ingredients.jsonl \
       --generations studyb/camo/generations.jsonl --report studyb/camo/checks.md \
@@ -12,7 +12,7 @@ Checks per pair (ERROR = fix or regenerate: delete the line from generations.jso
          wording (word similarity < 0.25)
 Spot-check sheet: every pair with a substantive warning (not the move-wording or length notes), topped up with a
 random sample to --max-pairs (default 30 pairs = 60 rows; --max-pairs 0 uses --share of the rest instead); both replies of each sampled pair,
-shuffled together, stance hidden, same rater question as the main ground-truth sheet. The key marks the camouflaged
+shuffled together, stance hidden, same rater question as make_ground_truth_sheet.py. The key marks the camouflaged
 reply as "partial" (confirmed if rated A or C) and the twin as "honest" (confirmed if rated B), so
 score_ground_truth.py scores it unchanged.
 """
@@ -104,7 +104,7 @@ def main():
     R.insert(1, f"**{len(latest)} pairs · {counts['ERROR']} errors · {counts['WARN']} warnings** "
                 f"({len(flagged)} pairs with a substantive warning)\n")
     open(a.report, "w").write("\n".join(R))
-    # blind spot-check sheet
+    # spot-check sheet (stance hidden)
     rnd = random.Random(a.seed)
     flagged = [k for k in flagged if latest[k].get("pair")]
     n_rest = max(0, min(len(clean), a.max_pairs - len(flagged))) if a.max_pairs else round(a.share * len(clean))

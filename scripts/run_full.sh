@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
-# Study B full run (v0.5d, 60 questions, up to 1,620 versions). Needs ANTHROPIC_API_KEY. Run from the fooling-the-judge folder.
+# Main study (60 questions, up to 1,620 versions). Needs ANTHROPIC_API_KEY. Run from the fooling-the-judge folder.
 #
 #   STAGE=1 bash scripts/run_full.sh   ingredients for the 65 candidates -> 60 questions -> versions -> review page and the
-#                                      blind rating sheet (all partials + 30 honest/failing fillers). No judging.
+#                                      stance-rating sheet (all partials + 30 honest/failing fillers). No judging.
 #                                      To exclude questions, add them with the reason to studyb/exclusions.tsv and rerun.
-#   (time-stamp the pre-registration together with studyb/full/FROZEN.sha256)
 #   STAGE=2 bash scripts/run_full.sh   judges (arms 0-3) and the 10% re-judge. Batch API by default (half price; most batches
 #                                      finish within an hour). Safe to stop and re-run: it collects finished batches and
-#                                      keeps waiting. DO NOT open the judgment files until your rating is done.
-#   (rate ground_truth_sheet.csv, save it as ground_truth_RATED.csv)
-#   STAGE=3 bash scripts/run_full.sh   scores the rating, then the judgments
+#                                      keeps waiting.
+#   STAGE=3 bash scripts/run_full.sh   scores a completed stance rating (ground_truth_RATED.csv), then the judgments.
+#                                      Optional: analyze_studyb.py can be run directly on the judgments instead.
 #
 # Optional: INGREDIENT_MODEL, JUDGE_MODEL, BATCH=0 (ordinary calls instead of batches), JUDGE_WORKERS (parallel calls when
 # BATCH=0, default 8), REDO_ROUNDS (default 2), EXCLUDE (comma-separated base_ids), FILLERS (default 30)
@@ -47,14 +46,14 @@ if [ "$STAGE" = "1" ]; then
   echo "== 6 lexicon checks"
   python3 -I scripts/lexicon_checks.py --items "$ITEMS" --ingredients "$P/ingredients.jsonl" --versions "$P/versions.jsonl" \
     --report "$P/lexicon_checks.md" --csv "$P/lexicon_features.csv" --frames "$FR" || echo "   (lexicon checks skipped)"
-  echo "== 7 review page (no judge results) and blind ground-truth sheet"
+  echo "== 7 review page (no judge results) and stance-rating sheet"
   python3 -I scripts/make_review_page.py --items "$ITEMS" --ingredients "$P/ingredients.jsonl" --versions "$P/versions.jsonl" \
     --frames "$FR" --fitted "$P/markers_fitted.jsonl" --html "$P/review.html" --csv "$P/review.csv"
   python3 -I scripts/make_ground_truth_sheet.py --items "$ITEMS" --versions "$P/versions.jsonl" \
     --sheet "$P/ground_truth_sheet.csv" --key "$P/ground_truth_KEY.jsonl" --fillers "${FILLERS:-30}"
   shasum -a 256 "$ITEMS" "$FR" "$P/ingredients.jsonl" "$P/markers_fitted.jsonl" "$P/versions.jsonl" > "$P/FROZEN.sha256"
   echo "Done. Read $P/ingredients_check.md and review.html; rate $P/ground_truth_sheet.csv (do NOT open the KEY file)."
-  echo "Hashes of the frozen materials: $P/FROZEN.sha256 (time-stamp them with the pre-registration)."
+  echo "Hashes of the frozen materials: $P/FROZEN.sha256 (checked before judging)."
   exit 0
 fi
 
@@ -87,14 +86,14 @@ if [ "$STAGE" = "2" ]; then
     done
     case "$status" in *GAVE_UP*) echo "Some prompts failed 3 times; rerun STAGE=2 later to retry, or continue (they count as missing)." ;; esac
   fi
-  echo "Done judging. Do not open $J until your rating is finished; then run STAGE=3."
+  echo "Done judging -> $J"
   exit 0
 fi
 
 echo "== 1 check frozen materials"
 shasum -a 256 -c "$P/FROZEN.sha256"
 ls "$J"/*.batch.json "${J}_rejudge"/*.batch.json >/dev/null 2>&1 && { echo "Batches still open: run STAGE=2 first"; exit 1; }
-echo "== 2 score the blind rating"
+echo "== 2 score the stance rating"
 : "${RATED:=$P/ground_truth_RATED.csv}"
 [ -f "$RATED" ] || { echo "Missing $RATED (your rated copy of ground_truth_sheet.csv)"; exit 1; }
 python3 -I scripts/score_ground_truth.py --sheet "$RATED" --key "$P/ground_truth_KEY.jsonl" --versions "$P/versions.jsonl" \
@@ -109,4 +108,4 @@ python3 -I scripts/score_studyb.py "$J"/arm2*.jsonl --confirmed "$P/confirmed_ja
 python3 -I scripts/analyze_studyb.py --judgments "$J" --rejudge "${J}_rejudge" --confirmed "$P/confirmed.json" --report "$P/analysis.md" > /dev/null
 python3 -I scripts/make_review_page.py --items "$ITEMS" --ingredients "$P/ingredients.jsonl" --versions "$P/versions.jsonl" \
   --judgments "$J" --frames "$FR" --fitted "$P/markers_fitted.jsonl" --html "$P/review_judged.html" --csv "$P/review_judged.csv"
-echo "Done. Read $P/ground_truth.md, $P/analysis.md (pre-registered tests), $P/scores.md, $P/scores_janus_rule_M.md, $P/consistency.md, $P/review_judged.html"
+echo "Done. Read $P/ground_truth.md, $P/analysis.md, $P/scores.md, $P/scores_janus_rule_M.md, $P/consistency.md, $P/review_judged.html"

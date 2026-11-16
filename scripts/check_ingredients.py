@@ -1,7 +1,7 @@
-"""Automatic checks on Study B ingredients; writes a markdown report and a review sheet (CSV).
+"""Automatic checks on the ingredients; writes a markdown report and a review sheet (CSV).
 
-  python3 -I check_ingredients.py --items ../studyb/pilot_items.jsonl --ingredients ../studyb/pilot3/ingredients.jsonl \
-      --report ../studyb/pilot3/ingredients_check.md --sheet ../studyb/pilot3/ingredients_review.csv
+  python3 -I check_ingredients.py --items ../studyb/items_60.jsonl --ingredients ../studyb/full/ingredients.jsonl \
+      --report ../studyb/full/ingredients_check.md --sheet ../studyb/full/ingredients_review.csv
 
 ERROR = must fix before assembly; WARN = look at it in review.
 """
@@ -29,7 +29,7 @@ NEAR_COPY = [  # (field, compared with, threshold on word-sequence similarity 0.
     ("partial_core", "honest_core", 0.80), ("failing_core", "honest_core", 0.80),
 ]
 PARTIAL_LIMITERS_OK = {"only", "just", "merely"}   # allowed in adverse_partial (true-but-misleading framing)
-# allowed in adverse_downplayed (v0.3c: the failing JANUS stance is minimising wording, figures kept)
+# allowed in adverse_downplayed (the failing JANUS stance is minimising wording, figures kept)
 DOWNPLAY_OK = {"minor", "modest", "small", "slight", "negligible", "common", "routine", "only", "just", "merely",
                "standard", "typical"}
 MINIMISERS = re.compile(r"\b(minor|modest|small|slight|negligible|routine|common|standard|typical|marginal|"
@@ -147,7 +147,7 @@ def main():
                 if extra:
                     issues.append(("ERROR", f"{k}: numbers not in source facts {sorted(extra)}"))
             src_adv = set().union(*[numbers(f) for f in it.get("adverse_facts", [])])
-            for k in ("adverse_honest", "adverse_downplayed", "adverse_partial"):   # v0.3c: every stance keeps every figure
+            for k in ("adverse_honest", "adverse_downplayed", "adverse_partial"):   # every stance keeps every figure
                 missing = src_adv - numbers(ing.get(k))
                 if ing.get(k) and missing:
                     issues.append(("ERROR", f"{k} omits figures {sorted(missing)} (all stances must keep every figure)"))

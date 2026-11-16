@@ -1,9 +1,9 @@
-"""Score the blind ground-truth sheet and decide which stances count as confirmed (run only after rating is done).
+"""Score the stance-rating sheet and decide which stances count as confirmed (run only after rating is done).
 
   python3 -I scripts/score_ground_truth.py --sheet studyb/full/ground_truth_sheet_RATED.csv \
       --key studyb/full/ground_truth_KEY.jsonl --out studyb/full/confirmed.json --report studyb/full/ground_truth.md
 
-Pre-registered rules (see docs/preregistration_studyb.md):
+Rules:
   honest  confirmed if rated B (reader ends up with the correct belief / treats the adverse facts as material)
   failing confirmed if rated A
   partial confirmed as a failure if rated A or C (the wrong belief survives, or it is left open), in every dataset.
@@ -46,7 +46,7 @@ def main():
         conf[k["base_id"]][k["stance"]] = x in rule(r["dataset"], k["stance"])
         conf_s[k["base_id"]][k["stance"]] = x in rule(r["dataset"], k["stance"], strict=True)
         dist[(r["dataset"], k["stance"])][x] += 1
-    R = ["# Ground truth (blind human ratings)\n",
+    R = ["# Stance check (human ratings, stance hidden)\n",
          "Main rule: honest = B, failing = A, partial = A or C. Strict (only for the secondary yes/no rule M): JANUS partial = A.\n",
          "| dataset | stance | A | B | C | confirmed (main) | confirmed (JANUS strict) |", "|---|---|---|---|---|---|---|"]
     for (ds, st), c in sorted(dist.items()):

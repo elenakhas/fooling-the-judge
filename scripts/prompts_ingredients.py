@@ -1,18 +1,18 @@
-"""Study B ingredient prompts (v0.3, 14 Nov 2026). One prompt per dataset. v0.1 and v0.2 are in studyb/archive/.
+"""Ingredient prompts. One prompt per dataset.
 
 Each prompt turns one base item into short, item-specific sentences ("ingredients"). Versions are assembled from
 ingredients + hand-written frames, so that:
   - the vocabulary under test comes ONLY from the frames;
   - the content (facts, stance) comes ONLY from the ingredients and is the same in all of a question's versions.
 
-Changes from v0.2 (after pilot 2):
-  - Explicit level dropped (pilots 1-2: every judge read a stated verdict perfectly), so no verdict fields.
-  - Three stances: honest, failing (quiet: carries the wrong belief as fact) and PARTIAL failing (states the correct
-    fact, then leaves the belief standing). Pilot 2 showed that markers can only tip an ambiguous stance.
-  - Cores answer the question in their first sentence (pilot 2: a reply that buried the answer was called EVADE).
-  - Edge case loosened: a real special case about the same phenomenon where the student's reasoning has some
-    grounding; the belief need not fully hold there (pilot 2: strict rule left 3 of 4 questions without one).
-  - JANUS (v0.3c, Lena 14 Nov): all three stances keep every fact and figure; only the wording differs. Honest =
+Design notes:
+  - No explicit verdict fields: judges read stated verdicts perfectly in early tests.
+  - Three stances: honest, failing (carries the wrong belief as fact) and PARTIAL failing (states the correct
+    fact, then leaves the belief standing).
+  - Cores answer the question in their first sentence (a reply that buried the answer was judged evasive).
+  - Edge case: a real special case about the same phenomenon where the student's reasoning has some grounding; the
+    belief need not fully hold there.
+  - JANUS: all three stances keep every fact and figure; only the wording differs. Honest =
     neutral wording plus direct consequences (as real neutral JANUS summaries do); failing = minimising adjectives and
     euphemisms; partial = true containing qualifiers. No recommendations (JANUS's task prompt asks for none).
 
@@ -118,7 +118,7 @@ Return JSON with exactly these keys: neutral_background, honest_core, failing_co
 # ---------------------------------------------------------------------------------------------
 # JANUS: a decision-support summary written by someone whose organisation wants approval.
 # Failing = the material adverse facts are downplayed. Both stances mention the SAME facts.
-# v0.3c (Lena, 14 Nov): all three stances keep every fact and figure and differ only in wording (JANUS framing channel):
+# All three stances keep every fact and figure and differ only in wording (JANUS framing channel):
 # honest = neutral, with direct consequences; failing = minimising adjectives/euphemisms; partial = true containing
 # qualifiers. No recommendations anywhere (JANUS's task prompt never asks for one).
 # ---------------------------------------------------------------------------------------------
@@ -234,7 +234,7 @@ def quiet_hits(kind, text, source_text=""):
 
 
 # ---------------------------------------------------------------------------------------------
-# Marker fitting (v0.3b, Lena 14 Nov): the phrasing assigned to a question may be adapted minimally to its topic.
+# Marker fitting: the phrasing assigned to a question may be adapted minimally to its topic.
 # STANCE-BLIND: the model sees only the question's topic, never the honest/failing/partial text, and the fitted
 # phrasing is used in all three stances of that question.
 # ---------------------------------------------------------------------------------------------
@@ -271,7 +271,7 @@ MARKER_SLOT = {"warmth": "warmth", "concession": "concession", "scope": "scope",
 
 def render_marker_fit(item, markers, alternatives=None):
     """(system, user) for fitting one question's assigned phrasings. markers: {family: phrasing};
-    alternatives: {family: [spare phrasings]} offered when the assigned one cannot be made to fit (v0.3d, Lena 14 Nov)."""
+    alternatives: {family: [spare phrasings]} offered when the assigned one cannot be made to fit."""
     alternatives = alternatives or {}
     src = item["source"]
     if src == "EduFrameTrap":

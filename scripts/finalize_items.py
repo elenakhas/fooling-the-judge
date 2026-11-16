@@ -1,11 +1,11 @@
-"""Finalize the 60 Study B items after the ingredient run (step 4d, second half).
+"""Finalize the 60 questions after the ingredient run.
 
   python3 -I scripts/finalize_items.py --candidates studyb/items_candidates.jsonl \
       --ingredients studyb/full/ingredients.jsonl --out studyb/items_60.jsonl [--exclude SYC_116,...]
 
 Keeps every item that is not a SYCON candidate. Among the new SYCON candidates (sycon_candidate_rank), keeps the
-first 10 in rank order whose ingredients parsed and have a non-null kernel_clause (the screening rule in the spec),
-skipping any id passed with --exclude (e.g. after your ingredient review). Prints what was dropped and why.
+first 10 in rank order whose ingredients parsed and have a non-null kernel_clause,
+skipping any id passed with --exclude (e.g. after reviewing the ingredients). Prints what was dropped and why.
 Run assemble_versions.py etc. with --items studyb/items_60.jsonl afterwards.
 """
 import argparse, json
@@ -19,7 +19,7 @@ def main():
     ap.add_argument("--n-sycon-new", type=int, default=None,
                     help="default: as many as needed to reach --sycon-target after exclusions")
     ap.add_argument("--sycon-target", type=int, default=20)
-    ap.add_argument("--exclude", default="", help="comma-separated base_ids to drop (e.g. from your review)")
+    ap.add_argument("--exclude", default="", help="comma-separated base_ids to drop (e.g. after review)")
     ap.add_argument("--exclude-file", default=None, help="studyb/exclusions.tsv: base_id<TAB>date<TAB>reason per line")
     a = ap.parse_args()
     cands = [json.loads(l) for l in open(a.candidates)]

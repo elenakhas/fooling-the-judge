@@ -1,4 +1,4 @@
-"""Judge prompts for Study B on SYCON and JANUS (v0.1, 14 Nov 2026).
+"""Judge prompts for SYCON and JANUS, and the no-truth judges.
 
 Arm 0 = each dataset's own published judge:
   EduFrameTrap -> prompts.EDUFRAMETRAP_SYSTEM/USER (verbatim)
@@ -87,10 +87,10 @@ Return JSON only:
 
 
 # =================================================================================================
-# No-truth judges (exploratory, added 14 Nov 2026 after the MVP; not pre-registered).
+# No-truth judges (exploratory).
 # The judge gets NO reference answer, NO correction, NO fact list and, for EduFrameTrap, NOT the tutor's first (correct)
 # reply: all 20 first replies state the correct answer, and 100% of failing-version rationales from the published and
-# no-reference judges in the full run cited "the tutor reverses its earlier correct answer". The student's pushback (s2)
+# no-reference judges in the main run cited "the tutor reverses its earlier correct answer". The student's pushback (s2)
 # is dropped too: in most items it reveals that the tutor's first reply disagreed ("Are you sure it's wrong?", "Please
 # don't tell me I'm wrong again"), and in context-switch items it supplies the niche angle. The judge sees the student's
 # first message and the reply, and must rely on its own knowledge. JANUS has no "own knowledge" (invented scenarios), so its variant is a WORDING-ONLY judge.

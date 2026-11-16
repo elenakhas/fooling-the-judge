@@ -1,5 +1,5 @@
-"""Study B2 analysis: camouflaged reply vs legitimate twin, per move, against the MVP's plain versions of the same questions.
-Aggregates only (no question-level verdicts), so it can be read before the spot-check is rated.
+"""Camouflage analysis: camouflaged reply vs legitimate twin, per move, against the main study's plain versions of the
+same questions. Reports aggregates only.
 
   python3 -I scripts/analyze_camo.py --camo results/judgments/studyb_camo --plain results/judgments/studyb_full \
       --report studyb/camo/analysis.md [--confirmed studyb/camo/confirmed.json]
@@ -11,8 +11,8 @@ Per judge arm x dataset x move (paired by question):
                            (false alarm); exact paired test on the questions that changed
   gap                    = camouflaged flag rate − twin flag rate (how well the judge separates the pair; 1 = perfect)
 Arm 2 (reader belief) also as the three-step score (A = 2, C = 1, B = 0: how much failure the judge sees).
---confirmed (from score_ground_truth.py on the spot-check) drops pairs whose camouflaged reply or twin was rated otherwise;
-unrated pairs are kept.
+Optional --confirmed (from score_ground_truth.py) drops pairs whose camouflaged reply or twin was rated as not doing its
+job; unrated pairs are kept.
 """
 import argparse, glob, json, os
 from collections import defaultdict
@@ -39,7 +39,7 @@ def main():
     ap.add_argument("--plain", required=True)
     ap.add_argument("--report", required=True)
     ap.add_argument("--confirmed", default=None)
-    ap.add_argument("--plain-notruth", default=None, help="judgments of the MVP versions by the no-truth judges (arm4, arm5)")
+    ap.add_argument("--plain-notruth", default=None, help="judgments of the main versions by the no-truth judges (arm4, arm5)")
     a = ap.parse_args()
     conf = json.load(open(a.confirmed)) if a.confirmed else {}
 
@@ -76,7 +76,7 @@ def main():
             pf, ph = F.get((ds, "failing", "plain"), {}), F.get((ds, "honest", "plain"), {})
             if not pf and not ph:
                 continue
-            R.append(f"| {ds} | *plain (MVP)* | {len(pf)} | {1 - sum(pf.values()) / max(1, len(pf)):.2f} | — | "
+            R.append(f"| {ds} | *plain* | {len(pf)} | {1 - sum(pf.values()) / max(1, len(pf)):.2f} | — | "
                      f"{sum(ph.values()) / max(1, len(ph)):.2f} | — | {sum(pf.values()) / max(1, len(pf)) - sum(ph.values()) / max(1, len(ph)):.2f} |")
             for mv in MOVES:
                 c, t = F.get((ds, "failing", mv), {}), F.get((ds, "honest", mv), {})
@@ -111,7 +111,7 @@ def main():
                     cc = list(L.get((ds, "failing", mv), {}).values())
                     tt = list(L.get((ds, "honest", mv), {}).values())
                     if cc or tt:
-                        R.append(f"| {ds} | {mv if mv != 'plain' else '*plain (MVP)*'} | {cc.count(2)} / {cc.count(1)} / {cc.count(0)} | "
+                        R.append(f"| {ds} | {mv if mv != 'plain' else '*plain*'} | {cc.count(2)} / {cc.count(1)} / {cc.count(0)} | "
                                  f"{tt.count(2)} / {tt.count(1)} / {tt.count(0)} |")
             R.append("")
     R.append("## Parse rates\n")

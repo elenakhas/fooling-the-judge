@@ -1,4 +1,4 @@
-"""Study B2: generate camouflaged replies and their legitimate twins (one call per question x move).
+"""Generate camouflaged replies and their legitimate twins (one call per question x move).
 
   python3 -I scripts/generate_camo.py --items studyb/items_60.jsonl --ingredients studyb/full/ingredients.jsonl \
       --out studyb/camo/generations.jsonl --versions studyb/camo/versions.jsonl [--moves E1_frame_shift,E3_concession_pivot]
@@ -8,7 +8,7 @@ Reuses the 60 questions and their checked ingredients (EduFrameTrap and SYCON on
 6 family-E moves, i.e. 40 questions x 6 moves = 240 calls, 480 replies. Re-running skips pairs already in --out.
 --versions writes judge-ready rows (same format as studyb/full/versions.jsonl): stance "failing" for the camouflaged
 reply and "honest" for the twin, family = the move, so judge_studyb.py and run_full's batching can judge them as-is,
-and the MVP's plain versions of the same questions serve as the no-move baseline.
+and the main study's plain versions of the same questions serve as the no-move baseline.
 """
 import argparse, concurrent.futures, datetime, json, os, re, sys
 

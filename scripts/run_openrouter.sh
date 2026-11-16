@@ -57,4 +57,4 @@ else
     case "$status" in *SUBMITTED*|*WAITING*) sleep "${POLL_SECONDS:-120}" ;; *) break ;; esac
   done
 fi
-echo "Done. Judgments in results/judgments/*_$TAG (do not open before your ratings are done)."
+echo "Done. Judgments in results/judgments/*_$TAG."

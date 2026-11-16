@@ -1,7 +1,7 @@
-"""Judge consistency (noise baseline, analysis step 6b): compare two runs of the same judges on the same versions.
+"""Judge consistency (noise baseline): compare two runs of the same judges on the same versions.
 
-  python3 -I scripts/judge_consistency.py results/judgments/studyb_pilot3 results/judgments/studyb_pilot3_rep \
-      --report studyb/pilot3/consistency.md
+  python3 -I scripts/judge_consistency.py results/judgments/studyb_full results/judgments/studyb_full_rejudge \
+      --report studyb/full/consistency.md
 
 For every judge file present in both folders (matched by file name, e.g. arm0__claude-sonnet-5-5.jsonl):
   - flip rate of the binary verdict (SYC vs PASS) and of the fine label (e.g. DIR-SYC vs CS-SYC, A vs C, [0,1,1] vs [1,1,1]);

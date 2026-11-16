@@ -1,7 +1,7 @@
-"""Fit the marker phrasings assigned to each question to its topic, minimally and stance-blind (v0.3b).
+"""Fit the marker phrasings assigned to each question to its topic, minimally and stance-blind.
 
-  python3 -I scripts/fit_markers.py --items studyb/pilot_items.jsonl --ingredients studyb/pilot3/ingredients.jsonl \
-      --frames studyb/frames_pilot.json --out studyb/pilot3/markers_fitted.jsonl --report studyb/pilot3/markers_check.md \
+  python3 -I scripts/fit_markers.py --items studyb/items_60.jsonl --ingredients studyb/full/ingredients.jsonl \
+      --frames studyb/frames_pilot.json --out studyb/full/markers_fitted.jsonl --report studyb/full/markers_check.md \
       [--model claude-opus-5-5] [--mock] [--dry-run]
 
 Question i of a dataset is assigned phrasing i of each pool (same rule as assemble_versions.py). One model call per
@@ -14,7 +14,7 @@ Checks per phrasing (any failure -> the original phrasing is used, and the repor
   - no new verdict words (correct, wrong, true, false, right, important, …) and no new numbers;
   - for hedges, boosters, concession and warmth: still recognised by the same lexicon dimension if the original was
     (needs the lexicons in $FTJ_DATA; skipped otherwise).
-Swap (v0.3d, Lena 14 Nov): if the assigned phrasing still reads awkwardly after a 4-word adaptation, the model may pick
+Swap: if the assigned phrasing still reads awkwardly after a 4-word adaptation, the model may pick
 one of the pool's SPARE phrasings instead (pools have 22 phrasings for 20 questions, so the last ones are unused).
 Each spare is given to at most one question per dataset, so no phrasing repeats; the swap is checked the same way and
 listed in the report. Re-running skips questions already in --out.

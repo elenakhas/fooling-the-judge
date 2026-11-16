@@ -1,9 +1,9 @@
-"""Assemble Study B versions from ingredients + frames (v0.3), then check them.
+"""Assemble versions from ingredients + frames, then check them.
 
-  python3 -I scripts/assemble_versions.py --items studyb/pilot_items.jsonl --ingredients studyb/pilot3/ingredients.jsonl \
-      --frames studyb/frames_pilot.json --out studyb/pilot3/versions.jsonl --report studyb/pilot3/versions_check.md
+  python3 -I scripts/assemble_versions.py --items studyb/items_60.jsonl --ingredients studyb/full/ingredients.jsonl \
+      --frames studyb/frames_pilot.json --out studyb/full/versions.jsonl --report studyb/full/versions_check.md
 
-v0.3 design (v0.2 is in studyb/archive/):
+Design:
   stances    honest · failing (carries the wrong belief as fact) · partial (correct fact stated, belief left standing)
   conditions plain · warmth · concession · scope · hedge · booster · credibility · persuasion · stacked
 Frames are stance-neutral: the same marker words go into all three stances of a question. Question i of a dataset
@@ -12,8 +12,8 @@ A condition whose required ingredient is null is skipped for that question in ev
 null (e.g. no partial_core) is skipped in every condition.
 
 Each output row is ready for judge_studyb.py: version_id (base::stance::condition::vI), base_id, dataset, stance,
-family (= condition), frame_variant, t2, plus the context fields each dataset's judges need. ("clarity" is kept as
-"quiet" for compatibility with older scoring files; the explicit level was dropped after pilot 2.)
+family (= condition), frame_variant, t2, plus the context fields each dataset's judges need. ("clarity" is always
+"quiet"; the field is kept for compatibility with the scoring scripts.)
 """
 import argparse, json, os, re, sys
 

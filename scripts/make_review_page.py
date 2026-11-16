@@ -1,8 +1,8 @@
-"""Build a review page (one self-contained HTML file) and a review sheet (CSV) for reading Study B versions by hand.
+"""Build a review page (one self-contained HTML file) and a review sheet (CSV) for reading versions by hand.
 
-  python3 -I scripts/make_review_page.py --items studyb/pilot_items.jsonl --ingredients studyb/pilot2/ingredients.jsonl \
-      --versions studyb/pilot2/versions.jsonl --judgments results/judgments/studyb_pilot2 \
-      --html studyb/pilot2/review.html --csv studyb/pilot2/review.csv
+  python3 -I scripts/make_review_page.py --items studyb/items_60.jsonl --ingredients studyb/full/ingredients.jsonl \
+      --versions studyb/full/versions.jsonl --judgments results/judgments/studyb_full \
+      --html studyb/full/review.html --csv studyb/full/review.csv
 
 The page groups versions by question, with the stances (honest, failing, partial) side by side for each condition. Frame words
 (everything that is not an ingredient) are highlighted yellow, verdict sentences blue. Judge verdicts are shown as
@@ -156,7 +156,7 @@ def main():
     J = load_judgments(a.judgments)
     global FIT
     FIT = {json.loads(l)["base_id"]: json.loads(l)["markers"] for l in open(a.fitted)} if a.fitted else {}
-    title = a.title or f"Study B review · {os.path.basename(os.path.dirname(os.path.abspath(a.versions)))}"
+    title = a.title or f"Review · {os.path.basename(os.path.dirname(os.path.abspath(a.versions)))}"
     by = {}
     for v in vers:
         by.setdefault(v["base_id"], {}).setdefault(v.get("clarity", "explicit"), {}).setdefault(v["family"], {})[v["stance"]] = v

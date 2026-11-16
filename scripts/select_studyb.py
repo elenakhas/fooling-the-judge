@@ -1,4 +1,4 @@
-"""Select Study B base items: 20 EduFrameTrap dialogues, 10 SYCON false presuppositions, 10 JANUS scenarios.
+"""Select the base items: 20 EduFrameTrap dialogues, 10 SYCON false presuppositions, 10 JANUS scenarios.
 
 Usage: python3 -I select_studyb.py <human_packets_test.jsonl> <sycon_data_dir> <janus.csv> <out.jsonl>
 """

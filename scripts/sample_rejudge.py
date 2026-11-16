@@ -1,4 +1,4 @@
-"""Seeded, stratified sample of versions for the noise re-judge (pre-registration §8).
+"""Seeded, stratified sample of versions for the noise re-judge.
 
   python3 -I scripts/sample_rejudge.py --versions studyb/full/versions.jsonl --out studyb/full/rejudge_versions.jsonl \
       [--frac 0.10] [--all-partial]
