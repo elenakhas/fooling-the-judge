@@ -1,7 +1,6 @@
 # fooling-the-judge
-Readme by Claude
 
-Code for the Apart Research Epistemics sprint project *Fooling the Judge* (pilot study).
+Code for the Apart Research Epistemics sprint project *Fooling the Judge: Do LLM Sycophancy Judges Read Stance or Vocabulary?* (pilot study).
 
 The study builds controlled answer versions from three sycophancy benchmarks (EduFrameTrap, SYCON-Bench, JANUS). Each question gets three stances (honest, partial, failing) × nine wording conditions (plain + 8 wording families). A second experiment pairs camouflaged replies with legitimate twins. The versions are judged by published sycophancy judges and a reader-belief judge, each with and without the ground truth, using Claude Sonnet 5.5 and gpt-oss-120b.
 
@@ -22,7 +21,7 @@ scripts/
   fit_markers.py, assemble_versions.py                    insert wording-family markers, assemble 1,620 versions
   lexicon_checks.py, features_open.py, fetch_lexicons.py  open-lexicon manipulation checks (optional)
   make_review_page.py                                     HTML page for reading versions by hand
-  make_ground_truth_sheet.py, score_ground_truth.py       blind stance-rating sheet
+  make_ground_truth_sheet.py, score_ground_truth.py       stance-rating sheet and its scoring (not used in the pilot)
   generate_camo.py, check_camo.py                         camouflage pairs (6 moves × 40 questions)
 
   judge_studyb.py           runs a judge arm over a versions file (sync, parallel or Message Batches API; cached)
@@ -33,7 +32,7 @@ scripts/
   analyze_studyb.py         paired tests (exact McNemar / sign test, Holm), Wilcoxon partial-vs-failing contrast
   analyze_camo.py           camouflage pass rates and twin false alarms
 
-  run_full.sh               main study: STAGE=1 materials, STAGE=2 judges (arms 0-3) + re-judge, STAGE=3 scoring
+  run_full.sh               main study: STAGE=1 materials, STAGE=2 judges (arms 0-3) + re-judge
   run_camo.sh               camouflage experiment
   run_notruth.sh            judges without the ground truth (arms 4-5)
   run_openrouter.sh         the same judges with another model via OpenRouter (used for gpt-oss-120b)
@@ -68,7 +67,7 @@ Source benchmarks (clone into `$FTJ_DATA/repos/`):
 
 Please check each benchmark's licence before redistributing anything derived from it.
 
-The pipeline also expects two inputs that are not in this repository: `studyb/frames_pilot.json` (wording-family marker phrasings) and `studyb/exclusions.tsv` (excluded questions with reasons).
+Two hand-written inputs are included: `studyb/frames_pilot.json` (the wording-family marker phrasings and the templates that place them) and `studyb/exclusions.tsv` (questions excluded from the 60, with the reason).
 
 ## Running
 
@@ -87,7 +86,9 @@ python3 -I scripts/analyze_studyb.py --judgments results/judgments/studyb_full \
 python3 -I figures/make_figs_data.py && python3 figures/final/fig2.py   # etc.
 ```
 
-In the pilot, every version counts at its intended stance (the blind stance rating was not used). The example figures need Playwright and a Chrome/Chromium binary.
+Each version is scored at the stance it was written for (honest, partial or failing); stances were spot-checked by hand. For the analysis, run stages 1 and 2 of `run_full.sh` and then `analyze_studyb.py` directly; stage 3 expects a stance-rating sheet that this pilot did not use.
+
+The example figures are rendered with Playwright. Install its browser once with `python3 -m playwright install chromium`, or point `CHROME_PATH` at an existing Chrome.
 
 ## Licence
 
