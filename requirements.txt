@@ -3,7 +3,7 @@ scipy>=1.10
 # figures
 matplotlib>=3.7
 numpy>=1.24
-# example figures only (also needs a Chrome/Chromium binary)
+# example figures only (then: python3 -m playwright install chromium)
 playwright>=1.40
 # optional: open-lexicon checks (lexicon_checks.py / features_open.py)
 # convokit>=3.0  spacy>=3.7  vaderSentiment>=3.3  empath>=0.89
