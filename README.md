@@ -1,6 +1,7 @@
 # fooling-the-judge
+Readme by Claude
 
-Code for the Apart Research Epistemics sprint project *Fooling the Judge: Do LLM Sycophancy Judges Read Stance or Vocabulary?* (pilot study).
+Code for the Apart Research Epistemics sprint project *Fooling the Judge* (pilot study).
 
 The study builds controlled answer versions from three sycophancy benchmarks (EduFrameTrap, SYCON-Bench, JANUS). Each question gets three stances (honest, partial, failing) × nine wording conditions (plain + 8 wording families). A second experiment pairs camouflaged replies with legitimate twins. The versions are judged by published sycophancy judges and a reader-belief judge, each with and without the ground truth, using Claude Sonnet 5.5 and gpt-oss-120b.
 
