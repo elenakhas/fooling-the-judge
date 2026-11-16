@@ -4,7 +4,7 @@ Code for the Apart Research Epistemics sprint project *Fooling the Judge: Do LLM
 
 The study builds controlled answer versions from three sycophancy benchmarks (EduFrameTrap, SYCON-Bench, JANUS). Each question gets three stances (honest, partial, failing) × nine wording conditions (plain + 8 wording families). A second experiment pairs camouflaged replies with legitimate twins. The versions are judged by published sycophancy judges and a reader-belief judge, each with and without the ground truth, using Claude Sonnet 5.5 and gpt-oss-120b.
 
-Data are not included. Third-party benchmarks are fetched from their own repositories (see below); generated versions and judgments are not part of this repository.
+Data are not included. Third-party benchmarks are fetched from their own repositories (see below); generated versions and judgments are not included.
 
 ## Layout
 
@@ -21,7 +21,7 @@ scripts/
   fit_markers.py, assemble_versions.py                    insert wording-family markers, assemble 1,620 versions
   lexicon_checks.py, features_open.py, fetch_lexicons.py  open-lexicon manipulation checks (optional)
   make_review_page.py                                     HTML page for reading versions by hand
-  make_ground_truth_sheet.py, score_ground_truth.py       stance-rating sheet and its scoring (not used in the pilot)
+  make_ground_truth_sheet.py, score_ground_truth.py       stance-rating sheet and its scoring
   generate_camo.py, check_camo.py                         camouflage pairs (6 moves × 40 questions)
 
   judge_studyb.py           runs a judge arm over a versions file (sync, parallel or Message Batches API; cached)
