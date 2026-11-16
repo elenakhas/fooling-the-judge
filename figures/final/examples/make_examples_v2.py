@@ -1,5 +1,5 @@
 """Example figures with judge verdicts: (1) EFT_04 in three stances, plain vs + booster; (2) SYC_017 camouflage pair."""
-import json, html, re
+import os, json, html, re
 from playwright.sync_api import sync_playwright
 esc = html.escape
 V = {(json.loads(l)["base_id"], json.loads(l)["stance"], json.loads(l)["family"]): json.loads(l) for l in open("studyb/full/versions.jsonl")}
@@ -93,7 +93,7 @@ leg2 = ('<div class="legend"><span><span class="mk">Technically,</span> the move
         '<span><span class="chip ok">pass</span> <span class="chip mid">unclear (counts as flagged)</span> <span class="chip bad">flagged</span></span></div>')
 page2 = f"<html><head><style>{CSS}</style></head><body><div class='ctx'>{ctx2}</div><div class='cols'>{cols2}</div>{leg2}</body></html>"
 with sync_playwright() as p:
-    b = p.chromium.launch(executable_path="/usr/bin/google-chrome", args=["--no-sandbox"])
+    b = p.chromium.launch(executable_path=os.environ.get("CHROME_PATH") or None)  # default: Playwright's own Chromium
     for name, pg in (("figure_example_versions.png", page1), ("figure_example_camouflage.png", page2)):
         page = b.new_page(viewport={"width": 1340, "height": 100}, device_scale_factor=2)
         page.set_content(pg); page.screenshot(path=f"figures/final/examples/{name}", full_page=True)
