@@ -22,7 +22,7 @@ scripts/
   fit_markers.py, assemble_versions.py                    insert wording-family markers, assemble 1,620 versions
   lexicon_checks.py, features_open.py, fetch_lexicons.py  open-lexicon manipulation checks (optional)
   make_review_page.py                                     HTML page for reading versions by hand
-  make_ground_truth_sheet.py, score_ground_truth.py       blind stance-rating sheet (built; rating not used in the pilot)
+  make_ground_truth_sheet.py, score_ground_truth.py       blind stance-rating sheet
   generate_camo.py, check_camo.py                         camouflage pairs (6 moves × 40 questions)
 
   judge_studyb.py           runs a judge arm over a versions file (sync, parallel or Message Batches API; cached)
